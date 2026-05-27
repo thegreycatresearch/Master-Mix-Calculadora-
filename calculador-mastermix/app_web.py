@@ -5,7 +5,7 @@ import calculos
 
 # Configuración inicial de la página web
 st.set_page_config(
-    page_title="GenMol PCR Calculator",
+    page_title="Master Mix Calculadora",
     page_icon="🧬",
     layout="centered"
 )
