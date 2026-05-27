@@ -45,10 +45,10 @@ def iniciar_programa() -> None:
         print("============================================================================\n")
         
         # 1. Captura controlada de variables críticas del ensayo
-        n_muestras = utils.obtener_numero("🧬 Cantidad de muestras biológicas a procesar: ", tipo=int, minimo=1)
-        vol_final = utils.obtener_numero("🧪 Volumen total FINAL de la PCR por tubo (uL): ", minimo=0.1)
-        vol_adn = utils.obtener_numero("💧 Volumen de ADN molde/template asignado por tubo (uL): ", minimo=0.0)
-        porcentaje_error = utils.obtener_numero("📉 Colchón de pipeteo - Porcentaje de error extra (ej. 10): ", minimo=0.0)
+        n_muestras = utils.obtener_numero("Cantidad de muestras biológicas a procesar: ", tipo=int, minimo=1)
+        vol_final = utils.obtener_numero("Volumen total FINAL de la PCR por tubo (uL): ", minimo=0.1)
+        vol_adn = utils.obtener_numero("Volumen de ADN molde/template asignado por tubo (uL): ", minimo=0.0)
+        porcentaje_error = utils.obtener_numero("Colchón de pipeteo - Porcentaje de error extra (ej. 10): ", minimo=0.0)
         
         # 2. Configuración del set de reactivos
         reactivos = configurar_reactivos()
@@ -58,7 +58,7 @@ def iniciar_programa() -> None:
         
         # 4. Manejo avanzado de excepciones de mesada y volumen
         if res["error"]:
-            print("\n❌ ¡ERROR DE CONSISTENCIA EN EL PROTOCOLO!")
+            print("\n ¡ERROR DE CONSISTENCIA EN EL PROTOCOLO!")
             print(f" Motivo: {res['motivo_error']}")
             
             # Desglose específico si el error es por saturación física de masa líquida
@@ -80,7 +80,7 @@ def iniciar_programa() -> None:
         print("=" * 78)
         
         # 6. Módulo de persistencia y trazabilidad digital
-        guardar = input("\n💾 ¿Deseás exportar este registro de lote a un archivo de texto (.txt)? (s/n): ").lower()
+        guardar = input("\n ¿Deseás exportar este registro de lote a un archivo de texto (.txt)? (s/n): ").lower()
         if guardar == 's':
             utils.exportar_reporte(tabla_str, alertas_str, n_muestras)
             
@@ -91,7 +91,7 @@ def iniciar_programa() -> None:
         opcion_final = utils.obtener_numero("Seleccioná una opción (1-2): ", tipo=int, minimo=1)
         
         if opcion_final == 2:
-            print("\n👋 Entorno cerrado correctamente. ¡Éxitos en la mesada de GenMol!")
+            print("\n Entorno cerrado correctamente. ¡Éxitos en la mesada de GenMol!")
             break
 
 if __name__ == "__main__":
