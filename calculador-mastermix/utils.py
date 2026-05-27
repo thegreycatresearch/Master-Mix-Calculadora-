@@ -20,11 +20,11 @@ def obtener_numero(mensaje: str, tipo: type = float, minimo: float = 0.0) -> Any
         try:
             valor = tipo(input(mensaje))
             if valor < minimo:
-                print(f"❌ El valor ingresado no puede ser menor a {minimo}. Intentá de nuevo.")
+                print(f" El valor ingresado no puede ser menor a {minimo}. Intentá de nuevo.")
                 continue
             return valor
         except ValueError:
-            print("❌ Entrada inválida. Por favor, ingresá un número válido (usá el punto '.' para los decimales).")
+            print("Entrada inválida. Por favor, ingresá un número válido (usá el punto '.' para los decimales).")
 
 def generar_tabla_y_alertas(
     n_muestras: int, 
@@ -51,37 +51,37 @@ def generar_tabla_y_alertas(
     
     # 1. Componente crítico: Agua de grado biología molecular (Relleno cinético)
     vol_agua_tot = resultados["totales_mix"]["Agua libre de nucleasas"]
-    tabla += f" 💧 {'Agua libre de nucleasas':<29} | {resultados['vol_agua_individual']:<12.2f} | {vol_agua_tot:<12.2f} uL\n"
+    tabla += f" {'Agua libre de nucleasas':<29} | {resultados['vol_agua_individual']:<12.2f} | {vol_agua_tot:<12.2f} uL\n"
     
     # 2. Desglose dinámico de reactivos del kit de amplificación
     for componente, vol_individual in reactivos_individuales.items():
         vol_total_componente = resultados["totales_mix"][componente]
         # Limpieza visual de etiquetas de concentración comercial
         nombre_limpio = componente.split(" (")[0]
-        tabla += f" 🧪 {nombre_limpio:<29} | {vol_individual:<12.2f} | {vol_total_componente:<12.2f} uL\n"
+        tabla += f" {nombre_limpio:<29} | {vol_individual:<12.2f} | {vol_total_componente:<12.2f} uL\n"
         
     tabla += linea_simple
     
     # --- CONSTRUCCIÓN DE ALERTAS E INSTRUCCIONES DE OPERACIÓN ---
-    alertas = f"📌 INSTRUCCIONES OPERATIVAS PARA LA MESADA:\n"
+    alertas = f" INSTRUCCIONES OPERATIVAS PARA LA MESADA:\n"
     alertas += f" 1. Preparación del Stock:\n"
     alertas += f"    En un tubo Eppendorf estéril de 1.5 mL, pipeteá los volúmenes de la columna 'Master Mix Total'.\n"
-    alertas += f"    👉 Volumen TOTAL a armar en el tubo madre: {resultados['total_tubo_master']:.2f} uL.\n\n"
+    alertas += f"    Volumen TOTAL a armar en el tubo madre: {resultados['total_tubo_master']:.2f} uL.\n\n"
     alertas += f" 2. Alícuotas en Placa/Strips:\n"
     alertas += f"    Fraccioná el Master Mix homogeneizado distribuyendo:\n"
-    alertas += f"    👉 {resultados['vol_mm_por_tubo']:.2f} uL del mix en cada pocillo o tubo de PCR.\n\n"
+    alertas += f"    {resultados['vol_mm_por_tubo']:.2f} uL del mix en cada pocillo o tubo de PCR.\n\n"
     alertas += f" 3. Incorporación del Templado:\n"
-    alertas += f"    👉 Agregá {vol_adn:.2f} uL de ADN molde (o control) a cada tubo de forma independiente.\n"
+    alertas += f"    Agregá {vol_adn:.2f} uL de ADN molde (o control) a cada tubo de forma independiente.\n"
     alertas += f"    (Volumen operativo final por reacción independiente: {vol_final:.2f} uL).\n\n"
     
     # Panel de control de calidad analítico
-    alertas += f"📊 VERIFICACIÓN DE CONTROL DE CALIDAD (QA/QC):\n"
+    alertas += f" VERIFICACIÓN DE CONTROL DE CALIDAD (QA/QC):\n"
     alertas += f" • Volumen bruto de reactivos escalados: {resultados['volumen_total_ensayo']:.2f} uL\n"
     
     if resultados.get("balance_masa_ok", True):
-        alertas += f" • Balance de masa y balanceo térmico: ✅ CONVERGENTE (0.00 uL de desvío)"
+        alertas += f" • Balance de masa y balanceo térmico: CONVERGENTE (0.00 uL de desvío)"
     else:
-        alertas += f" • Balance de masa y balanceo térmico: ⚠️ ADVERTENCIA (Revisar redondeo decimal)"
+        alertas += f" • Balance de masa y balanceo térmico: ADVERTENCIA (Revisar redondeo decimal)"
         
     return tabla, alertas
 
@@ -102,7 +102,7 @@ def exportar_reporte(tabla: str, alertas: str, n_muestras: int) -> None:
             f.write("        CENTRO NACIONAL PATAGÓNICO (CONICET - CENPAT)                       \n")
             f.write(f"        Registro de Mesada Automatizado - Fecha: {stamp_encabezado}         \n")
             f.write("============================================================================\n\n")
-            f.write(f"📋 RESUMEN METODOLÓGICO DEL ENSAYO:\n")
+            f.write(f"RESUMEN METODOLÓGICO DEL ENSAYO:\n")
             f.write(f" • Número de muestras biológicas declaradas: {n_muestras}\n\n")
             f.write(tabla)
             f.write("\n\n" + alertas + "\n")
