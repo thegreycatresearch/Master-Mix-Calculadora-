@@ -1,0 +1,15 @@
+[theme]
+# Color de acento principal (lineas de pestañas, botones, selectores)
+primaryColor = "#059669"
+
+# Color de fondo de la pantalla principal (blanco de alta claridad para mesada)
+backgroundColor = "#ffffff"
+
+# Color de fondo secundario (panel lateral y cuadros de informacion)
+secondaryBackgroundColor = "#f1f5f9"
+
+# Color del texto principal (azul pizarra oscuro para maxima legibilidad)
+textColor = "#1e293b"
+
+# Fuente tipografica del sistema
+font = "sans serif"
