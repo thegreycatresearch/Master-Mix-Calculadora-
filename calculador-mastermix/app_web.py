@@ -16,7 +16,7 @@ st.markdown("#### *Laboratorio de Genética Molecular (CONICET - CENPAT)*")
 st.write("---")
 
 # --- SECCIÓN 1: CAPTURA DE DATOS (PANEL IZQUIERDO / LATERAL) ---
-st.sidebar.header("📋 Parámetros del Ensayo")
+st.sidebar.header("Parámetros del Ensayo")
 
 n_muestras = st.sidebar.number_input("Cantidad de muestras reales:", min_value=1, value=10, step=1)
 vol_final = st.sidebar.number_input("Volumen FINAL de PCR por tubo (uL):", min_value=0.1, value=25.0, step=0.5)
@@ -24,7 +24,7 @@ vol_adn = st.sidebar.number_input("Volumen de ADN molde por tubo (uL):", min_val
 porcentaje_error = st.sidebar.number_input("Colchón de pipeteo (% error extra):", min_value=0.0, value=10.0, step=1.0)
 
 st.sidebar.write("---")
-st.sidebar.header("🧪 Configuración de Reactivos")
+st.sidebar.header("Configuración de Reactivos")
 tipo_protocolo = st.sidebar.radio("Seleccioná el protocolo:", ["Estándar GenMol", "Personalizado (Carga manual)"])
 
 # Definición del diccionario de reactivos según la selección
