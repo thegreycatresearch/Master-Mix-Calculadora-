@@ -8,6 +8,7 @@ st.set_page_config(
     layout="centered"
 )
 
+# Encabezado principal estilizado
 st.title("GENMOL-PCR: Calculador Web v1.2")
 st.markdown("#### *Laboratorio de Genetica Molecular (CONICET - CENPAT)*")
 st.write("---")
@@ -23,7 +24,6 @@ tab_mix, tab_ciclado, tab_dilucion = st.tabs([
 with tab_mix:
     st.sidebar.header("Parametros del Ensayo")
     
-    # Selector de formato rapido de placas
     formato_lote = st.sidebar.selectbox(
         "Configuracion rapida de lote:", 
         ["Manual", "Placa 96 pocillos (Completa)", "Placa 384 pocillos (Completa)"]
@@ -31,7 +31,7 @@ with tab_mix:
     
     if formato_lote == "Placa 96 pocillos (Completa)":
         n_muestras = 96
-        porcentaje_error_predeterminado = 12.0  # Mayor margen para multipetoras
+        porcentaje_error_predeterminado = 12.0
     elif formato_lote == "Placa 384 pocillos (Completa)":
         n_muestras = 384
         porcentaje_error_predeterminado = 15.0
@@ -74,7 +74,6 @@ with tab_mix:
         if vol_aditivo > 0:
             reactivos[f"Aditivo ({tipo_aditivo})"] = vol_aditivo
 
-    # Procesamiento logico
     res = calculos.calcular_componentes(n_muestras, vol_final, vol_adn, porcentaje_error, reactivos)
 
     if res["error"]:
@@ -88,6 +87,7 @@ with tab_mix:
             
         st.subheader(f"Resultados del Lote (Calculado para {res['n_total_rxs']:.2f} reacciones)")
         
+        # Tarjetas de metrica (ahora adoptaran el color verde esmeralda del tema)
         col1, col2, col3 = st.columns(3)
         col1.metric("Volumen Master Mix / Tubo", f"{res['vol_mm_por_tubo']:.2f} uL")
         col2.metric("ADN Template / Tubo", f"{vol_adn:.2f} uL")
@@ -114,8 +114,8 @@ with tab_mix:
 
         st.info(
             f"INSTRUCCIONES DE OPERACION EN MESADA:\n\n"
-            f"1. En un tubo de volumen adecuado, armar el Master Mix combinando los volumenes consolidados de la columna 'Master Mix Total' (Total: {res['total_tubo_master']:.2f} uL).\n"
-            f"2. Homogeneizar por inversion suave y alicuotar {res['vol_mm_por_tubo']:.2f} uL del mix en cada pocillo.\n"
+            f"1. En un tubo de volumen adecuado, armar el Master Mix combinando los volumenes consolidados de la columna 'Master Mix Total' (Total: {res['total_tubo_master']:.2f} uL).\n\n"
+            f"2. Homogeneizar por inversion suave y alicuotar {res['vol_mm_por_tubo']:.2f} uL del mix en cada pocillo.\n\n"
             f"3. Incorporar los {vol_adn:.2f} uL de la muestra de ADN de forma independiente por reaccion."
         )
 
@@ -125,7 +125,6 @@ with tab_mix:
         else:
             st.warning("CONTROL DE CALIDAD (QA/QC): Se detecto un desvio marginal en el redondeo decimal flotante.")
 
-        # Exportacion
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         reporte_txt = (
             f"=========================================================\n"
@@ -144,7 +143,7 @@ with tab_mix:
             mime="text/plain"
         )
 
-# --- SOLAPA 2: OPTIMIZACION DE CICLADO TERMICO (NUEVA FUNCION) ---
+# --- SOLAPA 2: OPTIMIZACION DE CICLADO TERMICO ---
 with tab_ciclado:
     st.subheader("Calculador de Perfil Termico para Termociclador")
     st.markdown("Estima las temperaturas y tiempos clave para la reaccion en base a tus cebadores y secuencia blanco.")
@@ -158,21 +157,15 @@ with tab_ciclado:
     st.write("---")
     st.markdown("### Perfil de Termociclador Recomendado (Polimerasa Estandar)")
     
-    col_fases, col_valores = st.columns(2)
-    
-    with col_fases:
-        st.markdown("**Desnaturalizacion Inicial:**")
-        st.markdown("**Desnaturalizacion (Ciclos):**")
-        st.markdown("**Anillamiento / Annealing (Ciclos):**")
-        st.markdown("**Extension (Ciclos):**")
-        st.markdown("**Extension Final:**")
-        
-    with col_valores:
-        st.write("95 C por 3:00 minutos")
-        st.write("95 C por 0:30 segundos")
-        st.write(f"**{ciclado_res['ta']} C** por 0:30 segundos")
-        st.write(f"72 C por **{ciclado_res['tiempo_ext_seg']} segundos**")
-        st.write("72 C por 5:00 minutos")
+    # Renderizado estetico del perfil termico usando bloques de codigo limpios
+    st.code(
+        f"1. Desnaturalizacion Inicial : 95 C por 3:00 minutos\n"
+        f"2. Desnaturalizacion (Ciclos): 95 C por 0:30 segundos\n"
+        f"3. Anillamiento (Annealing)  : {ciclado_res['ta']} C por 0:30 segundos\n"
+        f"4. Extension (Ciclos)       : 72 C por {ciclado_res['tiempo_ext_seg']} segundos\n"
+        f"5. Extension Final          : 72 C por 5:00 minutos",
+        language="text"
+    )
 
 # --- SOLAPA 3: ASISTENTE DE DILUCIONES ---
 with tab_dilucion:
