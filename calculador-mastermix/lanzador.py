@@ -2,6 +2,9 @@ import os
 import sys
 import streamlit.web.cli as stcli
 
+# Desactiva la solicitud de email de Streamlit para cualquier usuario
+os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
+
 def obtener_ruta_recurso(ruta_relativa):
     """ Permite acceder a los archivos empaquetados dentro del ejecutable """
     if hasattr(sys, '_MEIPASS'):
