@@ -3,16 +3,16 @@ import pandas as pd
 from datetime import datetime
 import calculos
 
-# 1. Configuracion de pagina basica
+# 1. Configuración de página básica
 st.set_page_config(
     page_title="Asistente Digital de PCR",
     layout="centered"
 )
 
-# 2. Inyeccion de diseño con st.html (Estética Claridad Molecular)
+# 2. Inyección de diseño con st.html (Estética Claridad Molecular)
 st.html("""
     <style>
-    /* Ocultar la barra superior de decoracion y el encabezado por defecto */
+    /* Ocultar la barra superior de decoración y el encabezado por defecto */
     [data-testid="stHeader"], header, .stDecoration {
         display: none !important;
         height: 0px !important;
@@ -24,7 +24,7 @@ st.html("""
         padding-top: 2rem !important;
     }
 
-    /* Fondo principal de la aplicacion (Gris Platino Claro) */
+    /* Fondo principal de la aplicación (Gris Platino Claro) */
     .stApp, .stMain, .stAppViewContainer {
         background-color: #f4f6f9 !important;
     }
@@ -34,12 +34,12 @@ st.html("""
         background-color: #e5ecf4 !important;
     }
     
-    /* TODAS las letras del sistema en color Negro Absoluto (Maxima legibilidad) */
+    /* TODAS las letras del sistema en color Negro Absoluto (Máxima legibilidad) */
     h1, h2, h3, h4, p, label, span, .stMarkdown p, [data-testid="stMetricValue"], [data-testid="stMetricLabel"] {
         color: #000000 !important;
     }
     
-    /* Forzar texto negro tambien dentro de la barra lateral */
+    /* Forzar texto negro también dentro de la barra lateral */
     [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
         color: #000000 !important;
     }
@@ -63,24 +63,24 @@ st.html("""
     }
     
     /* --- TOQUES DE CONTRASTE (Violeta Amatista UV) --- */
-    /* Linea inferior y texto de la solapa activa (Tabs) */
+    /* Línea inferior y texto de la solapa activa (Tabs) */
     button[data-baseweb="tab"] div[aria-selected="true"] {
         color: #a855f7 !important;
         font-weight: 700 !important;
     }
     
-    /* Lineas divisorias de la aplicacion (st.write("---")) */
+    /* Líneas divisorias de la aplicación (st.write("---")) */
     hr {
         border-color: #a855f7 !important;
         opacity: 0.6;
     }
     
-    /* Texto de las pestañas inactivas (Gris oscuro para mantener la jerarquia) */
+    /* Texto de las pestañas inactivas (Gris oscuro para mantener la jerarquía) */
     button[data-baseweb="tab"] {
         color: #475569 !important;
     }
     
-    /* Contenedores de informacion especiales (st.info, st.warning) */
+    /* Contenedores de información especiales (st.info, st.warning, st.error) */
     div[data-testid="stNotification"] {
         background-color: #ffffff !important;
         border-left: 5px solid #a855f7 !important;
@@ -91,16 +91,17 @@ st.html("""
     </style>
 """)
 
-# 3. Encabezado institucional de la aplicacion
+# 3. Encabezado institucional de la aplicación
 st.title("Asistente Digital de PCR")
-st.markdown("#### *Herramienta analítica para la preparación y optimización de ensayos moleculares*")
+st.markdown("#### *Herramienta analítica para la preparación, validación y optimización de ensayos moleculares*")
 st.write("---")
 
-# 4. Estructuracion en solapas funcionales
-tab_mix, tab_ciclado, tab_dilucion = st.tabs([
+# 4. Estructuración en solapas funcionales
+tab_mix, tab_ciclado, tab_dilucion, tab_diagnostico = st.tabs([
     "Cálculo de Master Mix", 
     "Optimización de Ciclado Térmico", 
-    "Asistente de Diluciones"
+    "Asistente de Diluciones",
+    "Diagnóstico y Optimización"
 ])
 
 # --- SOLAPA 1: CALCULO DE MASTER MIX ---
@@ -170,11 +171,27 @@ with tab_mix:
             
         st.subheader(f"Resultados del Lote (Calculado para {res['n_total_rxs']:.2f} reacciones)")
         
-        # Panel metrico principal
+        # Panel métrico principal
         col1, col2, col3 = st.columns(3)
         col1.metric("Volumen Master Mix / Tubo", f"{res['vol_mm_por_tubo']:.2f} uL")
         col2.metric("ADN Template / Tubo", f"{vol_adn:.2f} uL")
         col3.metric("Total Tubo Madre", f"{res['total_tubo_master']:.2f} uL")
+
+        # --- SECCIÓN NUEVA: AUDITORÍA DE VIABILIDAD EN MESADA (REALISMO) ---
+        reactivos_criticos = []
+        for comp, vol_tot in res['totales_mix'].items():
+            if vol_tot < 1.0 and comp != "Agua libre de nucleasas":
+                reactivos_criticos.append((comp, vol_tot))
+        
+        if reactivos_criticos:
+            with st.container():
+                st.warning(
+                    "ALERTA DE VIABILIDAD TÉCNICA: Se han detectado volúmenes de pipeteo críticamente bajos en el tubo madre. "
+                    "Para asegurar la reproducibilidad real en mesada, considere las siguientes recomendaciones:"
+                )
+                for item, vol in reactivos_criticos:
+                    st.markdown(f"- **{item}**: El volumen consolidado es de solo {vol:.2f} uL. Pipetear menos de 1 uL introduce un error experimental elevado. Se sugiere incrementar el número de muestras reflejadas, elevar el margen de pipeteo, o realizar una predilución 1:10 del stock del reactivo.")
+                st.write("")
 
         st.markdown("### Tabla de Pipeteo")
         
@@ -194,6 +211,19 @@ with tab_mix:
         
         df = pd.DataFrame(datos_tabla)
         st.dataframe(df, use_container_width=True, hide_index=True)
+
+        # --- SECCIÓN NUEVA: CONTROL DE CONCENTRACIONES FINALES TEÓRICAS ---
+        with st.expander("Verificar Concentraciones Finales de la Reacción"):
+            st.markdown("Auditoría analítica de la solución final en base a reactivos comerciales estándar:")
+            c_buffer = (reactivos.get("Buffer PCR (10x)", 2.5) / vol_final) * 10 if "Buffer PCR (10x)" in reactivos else 1.0
+            c_dntps = (reactivos.get("dNTPs (10mM)", 0.5) / vol_final) * 10 if "dNTPs (10mM)" in reactivos else 0.2
+            c_fwd = (reactivos.get("Primer Forward (10 uM)", 1.0) / vol_final) * 10 if "Primer Forward (10 uM)" in reactivos else 0.4
+            c_rev = (reactivos.get("Primer Reverse (10 uM)", 1.0) / vol_final) * 10 if "Primer Reverse (10 uM)" in reactivos else 0.4
+            
+            st.markdown(f"- **Concentración de Buffer:** {c_buffer:.2f}X *(Rango óptimo: 1X)*")
+            st.markdown(f"- **Concentración de dNTPs totales:** {c_dntps:.2f} mM *(Rango óptimo: 0.2 - 0.25 mM)*")
+            st.markdown(f"- **Concentración de Cebador Forward:** {c_fwd:.2f} uM *(Rango óptimo: 0.1 - 0.5 uM)*")
+            st.markdown(f"- **Concentración de Cebador Reverse:** {c_rev:.2f} uM *(Rango óptimo: 0.1 - 0.5 uM)*")
 
         st.info(
             f"Guía de operación en mesada:\n\n"
@@ -264,3 +294,50 @@ with tab_dilucion:
         st.success(f"Resultado: Es necesario añadir exactamente {v1_calculado:.2f} uL del reactivo stock por cada tubo.")
     else:
         st.warning("Verifique las variables introducidas: la concentración final no puede ser superior a la concentración del stock.")
+
+# --- SOLAPA 4: NUEVA SOLAPA DE DIAGNÓSTICO (TROUBLESHOOTING) ---
+with tab_diagnostico:
+    st.subheader("Asistente de Optimización y Resolución de Problemas")
+    st.markdown(
+        "Si los resultados empíricos obtenidos en el ensayo no coinciden con las predicciones del modelo teórico, "
+        "seleccione el patrón observado en el gel de electroforesis para acceder a las pautas de ajuste físico-químico:"
+    )
+    
+    patron = st.selectbox(
+        "Patrón anómalo observado en el gel de agarosa:",
+        [
+            "Seleccione una opción...",
+            "Ausencia total de amplificación (No se observan bandas)",
+            "Presencia de bandas inespecíficas (Bandas secundarias múltiples)",
+            "Dímeros de cebadores (Bandas intensas de muy bajo peso molecular)",
+            "Arrastre o degradación del amplicón (Efecto Smear en el carril)"
+        ]
+    )
+    
+    st.write("---")
+    
+    if patron == "Ausencia total de amplificación (No se observan bandas)":
+        st.markdown("### Recomendaciones para Ausencia de Señal:")
+        st.markdown("1. **Temperatura de Anillamiento (Ta):** Es posible que la temperatura calculada sea excesivamente restrictiva para la cinética de hibridación. Reduzca la Ta calculada en la Solapa 2 en intervalos de 2 °C.")
+        st.markdown("2. **Calidad del ADN Molde:** La presencia de inhibidores de la polimerasa (sales, etanol) puede bloquear la reacción. Pruebe una dilución 1:10 o 1:100 de la muestra de ADN molde.")
+        st.markdown("3. **Concentración de MgCl2:** Si está utilizando un protocolo personalizado, verifique que la concentración final de magnesio no sea inferior a 1.5 mM, ya que actúa como cofactor esencial de la enzima.")
+        
+    elif patron == "Presencia de bandas inespecíficas (Bandas secundarias múltiples)":
+        st.markdown("### Recomendaciones para Bandas Inespecíficas:")
+        st.markdown("1. **Incremento de Rigurosidad Térmica:** La temperatura de anillamiento actual es demasiado baja, permitiendo uniones inespecíficas en regiones parcialmente homólogas. Aumente la Ta de la Solapa 2 entre 1 °C y 3 °C.")
+        st.markdown("2. **Reducción de Ciclos:** Disminuya el número de ciclos del termociclador (por ejemplo, de 35 a 30) para evitar la amplificación tardía de artefactos de fondo.")
+        st.markdown("3. **Cebadores:** Reduzca la concentración final de los cebadores a 0.2 uM para disminuir la probabilidad de interacciones secundarias.")
+        
+    elif patron == "Dímeros de cebadores (Bandas intensas de muy bajo peso molecular)":
+        st.markdown("### Recomendaciones para Dímeros de Cebadores:")
+        st.markdown("1. **Cinética de Hibridación:** Ocurre cuando los cebadores tienen complementariedad en sus extremos 3'. Incremente la temperatura de anillamiento para desestabilizar estas estructuras débiles.")
+        st.markdown("2. **Disminución de Concentración:** Reduzca el volumen asignado a los cebadores en la Solapa 1. Concentraciones superiores a 0.5 uM favorecen la autohibridación por sobre la unión a la secuencia blanco.")
+        st.markdown("3. **Hot-Start:** Considere el uso de una polimerasa de tipo 'Hot-Start' para evitar la extensión de dímeros formados a temperatura ambiente durante la preparación de la mezcla.")
+        
+    elif patron == "Arrastre o degradación del amplicón (Efecto Smear en el carril)":
+        st.markdown("### Recomendaciones para Efecto Arrastre (Smear):")
+        st.markdown("1. **Exceso de ADN Molde:** Una cantidad desproporcionada de templado interfiere con la migración y agota prematuramente los dNTPs. Reduzca el volumen de ADN molde a 1 uL o realice una predilución.")
+        st.markdown("2. **Actividad Enzimática Excesiva:** Demasiadas unidades de Taq polimerasa pueden generar extensiones aberrantes. Ajuste el volumen de la enzima al límite inferior recomendado (0.1 uL a 0.2 uL por tubo).")
+        st.markdown("3. **Degradación:** Asegúrese de trabajar en condiciones libres de nucleasas externas y mantenga los reactivos estrictamente en cadena de frío.")
+    else:
+        st.info("Seleccione un patrón del menú desplegable para desplegar las sugerencias de optimización fisicoquímica.")
