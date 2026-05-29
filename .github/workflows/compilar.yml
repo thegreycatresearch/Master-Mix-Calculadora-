@@ -20,13 +20,21 @@ jobs:
       run: |
         pip install streamlit pandas pyinstaller
 
-    - name: Crear el archivo EXE
+    - name: Buscar y Compilar EXE Automáticamente
+      shell: powershell
       run: |
-        cd /workspaces/Master-Mix-Calculadora-/calculador-mastermix
-        pyinstaller --onefile --copy-metadata streamlit --add-data "app_web.py;." --add-data "calculos.py;." lanzador.py
+        $archivo = Get-ChildItem -Filter "lanzador.py" -Recurse | Select-Object -First 1
+        if ($archivo) {
+            Write-Host "¡Encontrado! Tus archivos están en: $($archivo.DirectoryName)"
+            cd $archivo.DirectoryName
+            pyinstaller --onefile --copy-metadata streamlit --add-data "app_web.py;." --add-data "calculos.py;." lanzador.py
+        } else {
+            Write-Error "Error: No se encontró 'lanzador.py' en ningún rincón del repositorio. Revisá si lo subiste."
+            exit 1
+        }
 
     - name: Guardar el resultado
       uses: actions/upload-artifact@v4
       with:
         name: Calculadora_PCR_Windows
-        path: /workspaces/Master-Mix-Calculadora-/calculador-mastermix/dist/lanzador.exe
+        path: "**/dist/lanzador.exe"
