@@ -9,7 +9,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Inyeccion de diseño con st.html (Estética Bioluminiscencia Cyber)
+# 2. Inyeccion de diseño con st.html (Estética Bioluminiscencia Nocturna)
 st.html("""
     <style>
     /* Fondo principal de la aplicacion (Obsidiana Profundo) */
@@ -22,7 +22,7 @@ st.html("""
         background-color: #161b2c !important;
     }
     
-    /* Textos principales y de las metricas (Blanco Nieve ultra legible) */
+    /* Textos principales y de las metricas (Blanco Nieve - Maxima legibilidad) */
     h1, h2, h3, h4, p, label, span, .stMarkdown p, [data-testid="stMetricValue"] {
         color: #f8fafc !important;
     }
@@ -32,21 +32,22 @@ st.html("""
         color: #f8fafc !important;
     }
     
-    /* Botones y descargas (Menta Glacial Claro - Resalta un monton con letras oscuras) */
+    /* Botones y descargas (Violeta profundo tirando a negro con texto Blanco Nieve) */
     button {
-        background-color: #a7f3d0 !important;
-        color: #0f121d !important;
-        border: 1px solid #a7f3d0 !important;
+        background-color: #1f122b !important;
+        color: #f8fafc !important;
+        border: 1px solid #c084fc !important; /* Borde violeta UV para enmarcar */
         border-radius: 8px !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.3px;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px;
+        transition: all 0.2s ease !important;
     }
     
-    /* Efecto Hover al pasar el mouse por los botones (Menta un toque mas intenso) */
+    /* Efecto Hover al pasar el mouse por los botones (Se aclara un toque el violeta) */
     button:hover {
-        background-color: #6ee7b7 !important;
-        border-color: #6ee7b7 !important;
-        color: #0f121d !important;
+        background-color: #321d45 !important;
+        border-color: #d8b4fe !important;
+        color: #f8fafc !important;
     }
     
     /* --- TOQUES DE CONTRASTE (Violeta Amatista UV) --- */
