@@ -9,65 +9,72 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Inyeccion de diseño con st.html (Estilo Consola de Secuenciacion)
+# 2. Inyeccion de diseño con st.html (Estética Bioluminiscencia Cyber)
 st.html("""
     <style>
-    /* Fondo de la aplicacion (Azul marino intermedio a claro) */
+    /* Fondo principal de la aplicacion (Obsidiana Profundo) */
     .stApp, .stMain, .stAppViewContainer {
-        background-color: #254160 !important;
+        background-color: #0f121d !important;
     }
     
-    /* Fondo del panel lateral (Un azul marino un toque mas profundo para dar volumen) */
+    /* Fondo del panel lateral (Un tono mas suave para generar contraste) */
     [data-testid="stSidebar"] {
-        background-color: #1a2e44 !important;
+        background-color: #161b2c !important;
     }
     
-    /* Color de los textos generales (Celeste super claro, tirando a blanco) */
+    /* Textos principales y de las metricas (Blanco Nieve ultra legible) */
     h1, h2, h3, h4, p, label, span, .stMarkdown p, [data-testid="stMetricValue"] {
-        color: #e0f2fe !important;
+        color: #f8fafc !important;
     }
     
-    /* Forzar texto claro en la barra lateral */
+    /* Asegurar texto claro para todas las etiquetas de la barra lateral */
     [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
-        color: #e0f2fe !important;
+        color: #f8fafc !important;
     }
     
-    /* Botones principales y de descarga (Celeste claro con texto oscuro para maxima legibilidad) */
+    /* Botones y descargas (Menta Glacial Claro - Resalta un monton con letras oscuras) */
     button {
-        background-color: #7dd3fc !important;
-        color: #111827 !important;
-        border: 1px solid #7dd3fc !important;
-        border-radius: 6px !important;
-        font-weight: 600 !important;
+        background-color: #a7f3d0 !important;
+        color: #0f121d !important;
+        border: 1px solid #a7f3d0 !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.3px;
     }
     
-    /* Efecto al pasar el mouse por encima de los botones (Celeste un toque mas intenso) */
+    /* Efecto Hover al pasar el mouse por los botones (Menta un toque mas intenso) */
     button:hover {
-        background-color: #38bdf8 !important;
-        border-color: #38bdf8 !important;
-        color: #111827 !important;
+        background-color: #6ee7b7 !important;
+        border-color: #6ee7b7 !important;
+        color: #0f121d !important;
     }
     
-    /* --- TOQUES DE COLOR DE COMBINACION (Acento Coral Energetico) --- */
+    /* --- TOQUES DE CONTRASTE (Violeta Amatista UV) --- */
     /* Linea inferior y texto de la solapa activa (Tabs) */
     button[data-baseweb="tab"] div[aria-selected="true"] {
-        color: #ff8264 !important;
+        color: #c084fc !important;
     }
     
-    /* Lineas de separacion de la app (st.write("---")) */
+    /* Lineas divisorias de la aplicacion (st.write("---")) */
     hr {
-        border-color: #ff8264 !important;
-        opacity: 0.7;
+        border-color: #c084fc !important;
+        opacity: 0.5;
     }
     
-    /* Texto de las pestañas inactivas (Celeste intermedio para que no compitan) */
+    /* Texto de las pestañas inactivas (Celeste apagado para mantener jerarquia) */
     button[data-baseweb="tab"] {
-        color: #93c5fd !important;
+        color: #64748b !important;
     }
     
-    /* Estilo para los titulos de las tarjetas de metrica */
+    /* Titulos secundarios de las metricas de resultados */
     [data-testid="stMetricLabel"] {
-        color: #93c5fd !important;
+        color: #94a3b8 !important;
+    }
+    
+    /* Contenedores de informacion especiales (st.info, st.warning) */
+    div[data-testid="stNotification"] {
+        background-color: #1e293b !important;
+        border-left: 5px solid #c084fc !important;
     }
     </style>
 """)
