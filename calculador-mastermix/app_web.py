@@ -1,5 +1,9 @@
 import os
 import sys
+from datetime import datetime
+import streamlit as st
+import pandas as pd
+import calculos  # Asegurate de que tu archivo calculos.py esté en la misma carpeta
 
 # Parche de rutas para evitar el error 'Not Found' en el ejecutable compilado
 if hasattr(sys, '_MEIPASS'):
@@ -9,8 +13,6 @@ else:
     ruta_actual = os.path.dirname(os.path.abspath(__file__))
     os.chdir(ruta_actual)
     sys.path.append(ruta_actual)
-
-# ... (Acá abajo sigue todo tu código de Streamlit normal, con tus imports de streamlit, pandas, etc.)
 
 # 1. Configuración de página básica
 st.set_page_config(
@@ -237,7 +239,7 @@ with tab_mix:
         st.info(
             f"Guía de operación en mesada:\n\n"
             f"1. En un tubo de volumen adecuado, prepare el Master Mix combinando los volúmenes consolidados de la columna 'Master Mix Total' (Volumen total: {res['total_tubo_master']:.2f} uL).\n\n"
-            f"2. Homogeneice por inversión suave y alícuote {res['vol_mm_por_tubo']:.2f} uL de la mezcla en cada pocillo.\n\n"
+            f"2. Homogeneice por inversion suave y alícuote {res['vol_mm_por_tubo']:.2f} uL de la mezcla en cada pocillo.\n\n"
             f"3. Incorpore los {vol_adn:.2f} uL de la muestra de ADN de forma independiente en cada reacción."
         )
 
@@ -349,4 +351,4 @@ with tab_diagnostico:
         st.markdown("2. **Actividad Enzimática Excesiva:** Demasiadas unidades de Taq polimerasa pueden generar extensiones aberrantes. Ajuste el volumen de la enzima al límite inferior recomendado (0.1 uL a 0.2 uL por tubo).")
         st.markdown("3. **Degradación:** Asegúrese de trabajar en condiciones libres de nucleasas externas y mantenga los reactivos estrictamente en cadena de frío.")
     else:
-        st.info("Seleccione un patrón del menú desplegable para desplegar las sugerencias de optimización fisicoquímica.")
+        st.info("Seleccione un patrón para desplegar las recomendaciones de troubleshooting en mesada.")
