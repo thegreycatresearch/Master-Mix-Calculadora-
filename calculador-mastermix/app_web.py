@@ -9,42 +9,65 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- PLAN DEFINITIVO: INYECCION CON ST.HTML (Sáltase el aislamiento de Markdown) ---
+# 2. Inyeccion de diseño con st.html (Estilo Consola de Secuenciacion)
 st.html("""
     <style>
-    /* 1. Fondo general de la aplicacion */
-    .stApp, .stMain {
-        background-color: #ffffff !important;
+    /* Fondo de la aplicacion (Azul marino intermedio a claro) */
+    .stApp, .stMain, .stAppViewContainer {
+        background-color: #254160 !important;
     }
     
-    /* 2. Fondo de la barra lateral */
+    /* Fondo del panel lateral (Un azul marino un toque mas profundo para dar volumen) */
     [data-testid="stSidebar"] {
-        background-color: #f1f5f9 !important;
+        background-color: #1a2e44 !important;
     }
     
-    /* 3. Color de todos los textos del sistema (pizarra oscuro) */
-    h1, h2, h3, h4, p, label, span, .stMarkdown p {
-        color: #1e293b !important;
+    /* Color de los textos generales (Celeste super claro, tirando a blanco) */
+    h1, h2, h3, h4, p, label, span, .stMarkdown p, [data-testid="stMetricValue"] {
+        color: #e0f2fe !important;
     }
     
-    /* 4. Botones principales, secundarios y de descarga (Verde Esmeralda) */
+    /* Forzar texto claro en la barra lateral */
+    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
+        color: #e0f2fe !important;
+    }
+    
+    /* Botones principales y de descarga (Celeste claro con texto oscuro para maxima legibilidad) */
     button {
-        background-color: #059669 !important;
-        color: white !important;
-        border: 1px solid #059669 !important;
+        background-color: #7dd3fc !important;
+        color: #111827 !important;
+        border: 1px solid #7dd3fc !important;
         border-radius: 6px !important;
+        font-weight: 600 !important;
     }
     
-    /* 5. Efecto al pasar el mouse por arriba de cualquier boton */
+    /* Efecto al pasar el mouse por encima de los botones (Celeste un toque mas intenso) */
     button:hover {
-        background-color: #047857 !important;
-        border-color: #047857 !important;
-        color: white !important;
+        background-color: #38bdf8 !important;
+        border-color: #38bdf8 !important;
+        color: #111827 !important;
     }
     
-    /* 6. Linea inferior y texto de la solapa activa (Tabs) */
+    /* --- TOQUES DE COLOR DE COMBINACION (Acento Coral Energetico) --- */
+    /* Linea inferior y texto de la solapa activa (Tabs) */
     button[data-baseweb="tab"] div[aria-selected="true"] {
-        color: #059669 !important;
+        color: #ff8264 !important;
+    }
+    
+    /* Lineas de separacion de la app (st.write("---")) */
+    hr {
+        border-color: #ff8264 !important;
+        opacity: 0.7;
+    }
+    
+    /* Texto de las pestañas inactivas (Celeste intermedio para que no compitan) */
+    button[data-baseweb="tab"] {
+        color: #93c5fd !important;
+    }
+    
+    /* Estilo para los titulos de las tarjetas de metrica */
+    [data-testid="stMetricLabel"] {
+        color: #93c5fd !important;
     }
     </style>
 """)
@@ -65,7 +88,6 @@ tab_mix, tab_ciclado, tab_dilucion = st.tabs([
 with tab_mix:
     st.sidebar.header("Parametros del Ensayo")
     
-    # Selector de formato rapido de placas o ingreso manual
     formato_lote = st.sidebar.selectbox(
         "Configuracion rapida de lote:", 
         ["Manual", "Placa 96 pocillos (Completa)", "Placa 384 pocillos (Completa)"]
@@ -116,7 +138,6 @@ with tab_mix:
         if vol_aditivo > 0:
             reactivos[f"Aditivo ({tipo_aditivo})"] = vol_aditivo
 
-    # Calculos logisticos delegados al modulo de calculos
     res = calculos.calcular_componentes(n_muestras, vol_final, vol_adn, porcentaje_error, reactivos)
 
     if res["error"]:
@@ -168,7 +189,6 @@ with tab_mix:
         else:
             st.warning("CONTROL DE CALIDAD (QA/QC): Se detecto un desvio marginal en el redondeo decimal flotante.")
 
-        # Generacion automatica del reporte de descarga
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         reporte_txt = (
             f"=========================================================\n"
