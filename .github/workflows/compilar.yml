@@ -1,1 +1,41 @@
+name: Compilar Calculadora PCR
 
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v4
+
+    - name: Configurar Python Estable (3.12)
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Instalar librerías en la nube
+      run: |
+        pip install streamlit pandas pyinstaller
+
+    - name: Buscar y Compilar con CMD
+      shell: cmd
+      run: |
+        for /f "delims=" %%i in ('dir /b /s lanzador.py') do (
+            echo "¡Archivo encontrado!"
+            cd "%%~dpi"
+            pyinstaller --onefile --copy-metadata streamlit --add-data "app_web.py;." --add-data "calculos.py;." lanzador.py
+            goto :done
+        )
+        echo "ERROR: No se encontro lanzador.py en ninguna carpeta"
+        exit 1
+        :done
+        echo "¡Compilacion finalizada con exito!"
+
+    - name: Guardar el resultado
+      uses: actions/upload-artifact@v4
+      with:
+        name: Calculadora_PCR_Windows
+        path: "**/dist/lanzador.exe"
