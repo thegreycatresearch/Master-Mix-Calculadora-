@@ -9,73 +9,72 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Inyeccion de diseño con st.html (Estética Bioluminiscencia Nocturna)
+# 2. Inyeccion de diseño con st.html (Estética Claridad Molecular)
 st.html("""
     <style>
-    /* Fondo principal de la aplicacion (Obsidiana Profundo) */
+    /* Fondo principal de la aplicacion (Gris Platino Claro) */
     .stApp, .stMain, .stAppViewContainer {
-        background-color: #0f121d !important;
+        background-color: #f4f6f9 !important;
     }
     
-    /* Fondo del panel lateral (Un tono mas suave para generar contraste) */
+    /* Fondo del panel lateral (Azul Hielo tenue para separar secciones) */
     [data-testid="stSidebar"] {
-        background-color: #161b2c !important;
+        background-color: #e5ecf4 !important;
     }
     
-    /* Textos principales y de las metricas (Blanco Nieve - Maxima legibilidad) */
-    h1, h2, h3, h4, p, label, span, .stMarkdown p, [data-testid="stMetricValue"] {
-        color: #f8fafc !important;
+    /* TODAS las letras del sistema en color Negro Absoluto (Maxima legibilidad) */
+    h1, h2, h3, h4, p, label, span, .stMarkdown p, [data-testid="stMetricValue"], [data-testid="stMetricLabel"] {
+        color: #000000 !important;
     }
     
-    /* Asegurar texto claro para todas las etiquetas de la barra lateral */
+    /* Forzar texto negro tambien dentro de la barra lateral */
     [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
-        color: #f8fafc !important;
+        color: #000000 !important;
     }
     
-    /* Botones y descargas (Violeta profundo tirando a negro con texto Blanco Nieve) */
+    /* Botones y descargas (Violeta Pastel Claro con letras NEGRAS para que resalten) */
     button {
-        background-color: #1f122b !important;
-        color: #f8fafc !important;
-        border: 1px solid #c084fc !important; /* Borde violeta UV para enmarcar */
+        background-color: #e9d5ff !important;
+        color: #000000 !important;
+        border: 2px solid #c084fc !important; /* Borde violeta UV */
         border-radius: 8px !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.5px;
+        font-weight: 700 !important;
+        letter-spacing: 0.3px;
         transition: all 0.2s ease !important;
     }
     
-    /* Efecto Hover al pasar el mouse por los botones (Se aclara un toque el violeta) */
+    /* Efecto Hover al pasar el mouse por los botones (Se vuelve un violeta un toque mas intenso) */
     button:hover {
-        background-color: #321d45 !important;
-        border-color: #d8b4fe !important;
-        color: #f8fafc !important;
+        background-color: #d8b4fe !important;
+        border-color: #a855f7 !important;
+        color: #000000 !important;
     }
     
     /* --- TOQUES DE CONTRASTE (Violeta Amatista UV) --- */
     /* Linea inferior y texto de la solapa activa (Tabs) */
     button[data-baseweb="tab"] div[aria-selected="true"] {
-        color: #c084fc !important;
+        color: #a855f7 !important;
+        font-weight: 700 !important;
     }
     
     /* Lineas divisorias de la aplicacion (st.write("---")) */
     hr {
-        border-color: #c084fc !important;
-        opacity: 0.5;
+        border-color: #a855f7 !important;
+        opacity: 0.6;
     }
     
-    /* Texto de las pestañas inactivas (Celeste apagado para mantener jerarquia) */
+    /* Texto de las pestañas inactivas (Gris oscuro para mantener la jerarquia) */
     button[data-baseweb="tab"] {
-        color: #64748b !important;
-    }
-    
-    /* Titulos secundarios de las metricas de resultados */
-    [data-testid="stMetricLabel"] {
-        color: #94a3b8 !important;
+        color: #475569 !important;
     }
     
     /* Contenedores de informacion especiales (st.info, st.warning) */
     div[data-testid="stNotification"] {
-        background-color: #1e293b !important;
-        border-left: 5px solid #c084fc !important;
+        background-color: #ffffff !important;
+        border-left: 5px solid #a855f7 !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-right: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
     }
     </style>
 """)
