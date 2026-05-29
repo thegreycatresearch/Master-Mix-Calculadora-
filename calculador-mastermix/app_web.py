@@ -1,7 +1,16 @@
-import streamlit as st
-import pandas as pd
-from datetime import datetime
-import calculos
+import os
+import sys
+
+# Parche de rutas para evitar el error 'Not Found' en el ejecutable compilado
+if hasattr(sys, '_MEIPASS'):
+    os.chdir(sys._MEIPASS)
+    sys.path.append(sys._MEIPASS)
+else:
+    ruta_actual = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(ruta_actual)
+    sys.path.append(ruta_actual)
+
+# ... (Acá abajo sigue todo tu código de Streamlit normal, con tus imports de streamlit, pandas, etc.)
 
 # 1. Configuración de página básica
 st.set_page_config(
