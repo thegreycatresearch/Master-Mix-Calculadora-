@@ -3,17 +3,63 @@ import pandas as pd
 from datetime import datetime
 import calculos
 
+# 1. Configuracion de pagina basica
 st.set_page_config(
     page_title="GenMol PCR Calculator",
     layout="centered"
 )
 
-# Encabezado principal estilizado
+# 2. Inyeccion de diseño forzada mediante CSS nativo
+st.markdown("""
+    <style>
+    /* Fondo de la barra lateral en gris clinico sutil */
+    [data-testid="stSidebar"] {
+        background-color: #f1f5f9 !important;
+    }
+    
+    /* Textos, titulos y etiquetas de la barra lateral en azul pizarra oscuro */
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] p, 
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] .stMarkdown p {
+        color: #1e293b !important;
+    }
+    
+    /* Botones y botones de descarga en Verde Esmeralda de laboratorio */
+    div.stButton > button, div.stDownloadButton > button {
+        background-color: #059669 !important;
+        color: white !important;
+        border: 1px solid #059669 !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Efecto de seleccion al pasar el mouse por encima de los botones */
+    div.stButton > button:hover, div.stDownloadButton > button:hover {
+        background-color: #047857 !important;
+        border-color: #047857 !important;
+        color: white !important;
+    }
+    
+    /* Color verde esmeralda para la linea y texto de la solapa activa */
+    button[data-baseweb="tab"] div[aria-selected="true"] {
+        color: #059669 !important;
+    }
+    
+    /* Estilo de los titulos de pestañas */
+    button[data-baseweb="tab"] {
+        font-weight: 500 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# 3. Encabezado institucional de la aplicacion
 st.title("GENMOL-PCR: Calculador Web v1.2")
 st.markdown("#### *Laboratorio de Genetica Molecular (CONICET - CENPAT)*")
 st.write("---")
 
-# Estructuracion de la app en solapas funcionales
+# 4. Estructuracion en solapas funcionales
 tab_mix, tab_ciclado, tab_dilucion = st.tabs([
     "Calculo de Master Mix", 
     "Optimizacion de Ciclado Termico", 
@@ -24,6 +70,7 @@ tab_mix, tab_ciclado, tab_dilucion = st.tabs([
 with tab_mix:
     st.sidebar.header("Parametros del Ensayo")
     
+    # Selector de formato rapido de placas o ingreso manual
     formato_lote = st.sidebar.selectbox(
         "Configuracion rapida de lote:", 
         ["Manual", "Placa 96 pocillos (Completa)", "Placa 384 pocillos (Completa)"]
@@ -74,6 +121,7 @@ with tab_mix:
         if vol_aditivo > 0:
             reactivos[f"Aditivo ({tipo_aditivo})"] = vol_aditivo
 
+    # Calculos logisticos delegados al modulo de calculos
     res = calculos.calcular_componentes(n_muestras, vol_final, vol_adn, porcentaje_error, reactivos)
 
     if res["error"]:
@@ -87,7 +135,7 @@ with tab_mix:
             
         st.subheader(f"Resultados del Lote (Calculado para {res['n_total_rxs']:.2f} reacciones)")
         
-        # Tarjetas de metrica (ahora adoptaran el color verde esmeralda del tema)
+        # Panel metrico principal
         col1, col2, col3 = st.columns(3)
         col1.metric("Volumen Master Mix / Tubo", f"{res['vol_mm_por_tubo']:.2f} uL")
         col2.metric("ADN Template / Tubo", f"{vol_adn:.2f} uL")
@@ -125,6 +173,7 @@ with tab_mix:
         else:
             st.warning("CONTROL DE CALIDAD (QA/QC): Se detecto un desvio marginal en el redondeo decimal flotante.")
 
+        # Generacion automatica del reporte de descarga
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         reporte_txt = (
             f"=========================================================\n"
@@ -157,7 +206,6 @@ with tab_ciclado:
     st.write("---")
     st.markdown("### Perfil de Termociclador Recomendado (Polimerasa Estandar)")
     
-    # Renderizado estetico del perfil termico usando bloques de codigo limpios
     st.code(
         f"1. Desnaturalizacion Inicial : 95 C por 3:00 minutos\n"
         f"2. Desnaturalizacion (Ciclos): 95 C por 0:30 segundos\n"
