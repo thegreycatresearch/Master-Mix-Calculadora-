@@ -20,39 +20,19 @@ jobs:
       run: |
         pip install streamlit pandas pyinstaller
 
-    - name: Buscar y Compilar EXE Automáticamente
+    - name: Buscar y Compilar con CMD
+      shell: cmd
       run: |
-        python -c "
-        import os, subprocess, sys
-        target_file = 'lanzador.py'
-        found_dir = None
-        
-        for root, dirs, files in os.walk('.'):
-            if '.git' in root or '.github' in root:
-                continue
-            if target_file in files:
-                found_dir = root
-                break
-        
-        if found_dir:
-            print('=== ¡ARCHIVO ENCONTRADO! ===')
-            print(f'Carpeta detectada: {found_dir}')
-            os.chdir(found_dir)
-            print('Ejecutando PyInstaller...')
-            comando = 'pyinstaller --onefile --copy-metadata streamlit --add-data \"app_web.py;.\" --add-data \"calculos.py;.\" lanzador.py'
-            resultado = subprocess.run(comando, shell=True)
-            if resultado.returncode != 0:
-                sys.exit(resultado.returncode)
-        else:
-            print('=== ERROR: NO SE ENCONTRÓ LANZADOR.PY ===')
-            print('Aca abajo te muestro la lista de TODO lo que el robot puede ver en tu repositorio actualmente:')
-            for root, dirs, files in os.walk('.'):
-                if '.git' in root or '.github' in root:
-                    continue
-                for f in files:
-                    print(f' - {os.path.join(root, f)}')
-            sys.exit(1)
-            "
+        for /f "delims=" %%i in ('dir /b /s lanzador.py') do (
+            echo "¡Archivo encontrado!"
+            cd "%%~dpi"
+            pyinstaller --onefile --copy-metadata streamlit --add-data "app_web.py;." --add-data "calculos.py;." lanzador.py
+            goto :done
+        )
+        echo "ERROR: No se encontro lanzador.py en ninguna carpeta"
+        exit 1
+        :done
+        echo "¡Compilacion finalizada con exito!"
 
     - name: Guardar el resultado
       uses: actions/upload-artifact@v4
