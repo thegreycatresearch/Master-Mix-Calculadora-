@@ -9,45 +9,48 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- INYECCION DE DISEÑO NUCLEAR (Rompe el bloqueo de memoria del navegador) ---
+# --- INYECCION DE DISEÑO ESTRUCTURAL (Inmune al modo System) ---
 st.markdown("""
     <style>
-    /* 1. Forzar variables de color globales de Streamlit a nivel raiz */
-    :root {
-        --primary-color: #059669 !important;
-        --background-color: #ffffff !important;
-        --secondary-background-color: #f1f5f9 !important;
-        --text-color: #1e293b !important;
-    }
-    
-    /* 2. Forzar el fondo general de toda la aplicacion */
-    .stApp {
+    /* 1. Pintar el fondo principal de la aplicacion (Cuerpo) */
+    .stAppViewContainer {
         background-color: #ffffff !important;
-        color: #1e293b !important;
     }
     
-    /* 3. Fondo especifico de la barra lateral */
-    [data-testid="stSidebar"] {
+    /* 2. Pintar el fondo de la barra lateral de gris sutil */
+    [data-testid="stSidebar"] > div:first-child {
         background-color: #f1f5f9 !important;
     }
     
-    /* 4. Asegurar el color del texto en el panel lateral */
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, 
-    [data-testid="stSidebar"] p, [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] .stMarkdown p {
+    /* 3. Forzar el color de todos los textos dentro de la barra lateral */
+    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
         color: #1e293b !important;
     }
     
-    /* 5. Botones y descargas en Verde Esmeralda */
-    div.stButton > button, div.stDownloadButton > button {
+    /* 4. Cambiar el color de los botones normales y de descarga a Verde Esmeralda */
+    button[data-testid="baseButton-secondary"], button[data-testid="baseButton-primary"] {
         background-color: #059669 !important;
         color: white !important;
         border: 1px solid #059669 !important;
+        border-radius: 6px !important;
+        transition: background-color 0.2s ease !important;
     }
-    div.stButton > button:hover, div.stDownloadButton > button:hover {
+    
+    /* 5. Efecto Hover para los botones */
+    button[data-testid="baseButton-secondary"]:hover, button[data-testid="baseButton-primary"]:hover {
         background-color: #047857 !important;
         border-color: #047857 !important;
         color: white !important;
+    }
+    
+    /* 6. Color verde esmeralda para la linea de la solapa activa (Tabs) */
+    button[data-baseweb="tab"] div[aria-selected="true"] {
+        color: #059669 !important;
+    }
+    
+    /* 7. Ajustar el color de los textos generales fuera de la barra lateral */
+    .stMarkdown p, h1, h2, h3, h4 {
+        color: #1e293b !important;
     }
     </style>
 """, unsafe_allow_html=True)
