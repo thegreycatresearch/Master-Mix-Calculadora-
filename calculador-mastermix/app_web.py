@@ -12,6 +12,18 @@ st.set_page_config(
 # 2. Inyeccion de diseño con st.html (Estética Claridad Molecular)
 st.html("""
     <style>
+    /* Ocultar la barra superior de decoracion y el encabezado por defecto */
+    [data-testid="stHeader"], header, .stDecoration {
+        display: none !important;
+        height: 0px !important;
+        opacity: 0 !important;
+    }
+    
+    /* Ajustar el espacio superior para compensar la falta de encabezado */
+    .block-container {
+        padding-top: 2rem !important;
+    }
+
     /* Fondo principal de la aplicacion (Gris Platino Claro) */
     .stApp, .stMain, .stAppViewContainer {
         background-color: #f4f6f9 !important;
