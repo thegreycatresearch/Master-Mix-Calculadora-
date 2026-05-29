@@ -9,47 +9,45 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Inyeccion de diseño forzada mediante CSS nativo
+# --- INYECCION DE DISEÑO NUCLEAR (Rompe el bloqueo de memoria del navegador) ---
 st.markdown("""
     <style>
-    /* Fondo de la barra lateral en gris clinico sutil */
+    /* 1. Forzar variables de color globales de Streamlit a nivel raiz */
+    :root {
+        --primary-color: #059669 !important;
+        --background-color: #ffffff !important;
+        --secondary-background-color: #f1f5f9 !important;
+        --text-color: #1e293b !important;
+    }
+    
+    /* 2. Forzar el fondo general de toda la aplicacion */
+    .stApp {
+        background-color: #ffffff !important;
+        color: #1e293b !important;
+    }
+    
+    /* 3. Fondo especifico de la barra lateral */
     [data-testid="stSidebar"] {
         background-color: #f1f5f9 !important;
     }
     
-    /* Textos, titulos y etiquetas de la barra lateral en azul pizarra oscuro */
-    [data-testid="stSidebar"] h1, 
-    [data-testid="stSidebar"] h2, 
-    [data-testid="stSidebar"] p, 
-    [data-testid="stSidebar"] label,
+    /* 4. Asegurar el color del texto en el panel lateral */
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] p, [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] .stMarkdown p {
         color: #1e293b !important;
     }
     
-    /* Botones y botones de descarga en Verde Esmeralda de laboratorio */
+    /* 5. Botones y descargas en Verde Esmeralda */
     div.stButton > button, div.stDownloadButton > button {
         background-color: #059669 !important;
         color: white !important;
         border: 1px solid #059669 !important;
-        border-radius: 6px !important;
-        font-weight: 600 !important;
     }
-    
-    /* Efecto de seleccion al pasar el mouse por encima de los botones */
     div.stButton > button:hover, div.stDownloadButton > button:hover {
         background-color: #047857 !important;
         border-color: #047857 !important;
         color: white !important;
-    }
-    
-    /* Color verde esmeralda para la linea y texto de la solapa activa */
-    button[data-baseweb="tab"] div[aria-selected="true"] {
-        color: #059669 !important;
-    }
-    
-    /* Estilo de los titulos de pestañas */
-    button[data-baseweb="tab"] {
-        font-weight: 500 !important;
     }
     </style>
 """, unsafe_allow_html=True)
