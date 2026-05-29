@@ -5,7 +5,7 @@ import calculos
 
 # 1. Configuracion de pagina basica
 st.set_page_config(
-    page_title="GenMol PCR Calculator",
+    page_title="Asistente Digital de PCR",
     layout="centered"
 )
 
@@ -43,7 +43,7 @@ st.html("""
         transition: all 0.2s ease !important;
     }
     
-    /* Efecto Hover al pasar el mouse por los botones (Se vuelve un violeta un toque mas intenso) */
+    /* Efecto Hover al pasar el mouse por los botones */
     button:hover {
         background-color: #d8b4fe !important;
         border-color: #a855f7 !important;
@@ -80,23 +80,23 @@ st.html("""
 """)
 
 # 3. Encabezado institucional de la aplicacion
-st.title("GENMOL-PCR: Calculador Web v1.2")
-st.markdown("#### *Laboratorio de Genetica Molecular (CONICET - CENPAT)*")
+st.title("Asistente Digital de PCR")
+st.markdown("#### *Herramienta analítica para la preparación y optimización de ensayos moleculares*")
 st.write("---")
 
 # 4. Estructuracion en solapas funcionales
 tab_mix, tab_ciclado, tab_dilucion = st.tabs([
-    "Calculo de Master Mix", 
-    "Optimizacion de Ciclado Termico", 
+    "Cálculo de Master Mix", 
+    "Optimización de Ciclado Térmico", 
     "Asistente de Diluciones"
 ])
 
 # --- SOLAPA 1: CALCULO DE MASTER MIX ---
 with tab_mix:
-    st.sidebar.header("Parametros del Ensayo")
+    st.sidebar.header("Parámetros del Ensayo")
     
     formato_lote = st.sidebar.selectbox(
-        "Configuracion rapida de lote:", 
+        "Configuración rápida de lote:", 
         ["Manual", "Placa 96 pocillos (Completa)", "Placa 384 pocillos (Completa)"]
     )
     
@@ -112,11 +112,11 @@ with tab_mix:
 
     vol_final = st.sidebar.number_input("Volumen FINAL de PCR por tubo (uL):", min_value=0.1, value=25.0, step=0.5)
     vol_adn = st.sidebar.number_input("Volumen de ADN molde por tubo (uL):", min_value=0.0, value=2.0, step=0.5)
-    porcentaje_error = st.sidebar.number_input("Colchon de pipeteo (% error extra):", min_value=0.0, value=porcentaje_error_predeterminado, step=1.0)
+    porcentaje_error = st.sidebar.number_input("Margen de pipeteo (% error extra):", min_value=0.0, value=porcentaje_error_predeterminado, step=1.0)
 
     st.sidebar.write("---")
-    st.sidebar.header("Configuracion de Reactivos")
-    tipo_protocolo = st.sidebar.radio("Selecciona el protocolo:", ["Estandar GenMol", "Personalizado (Carga manual)"])
+    st.sidebar.header("Configuración de Reactivos")
+    tipo_protocolo = st.sidebar.radio("Seleccione el protocolo:", ["Configuración Estándar", "Personalizado (Carga manual)"])
 
     if tipo_protocolo == "Personalizado (Carga manual)":
         reactivos = {
@@ -137,10 +137,10 @@ with tab_mix:
 
     st.sidebar.write("---")
     st.sidebar.header("Aditivos Especiales (Opcional)")
-    activar_aditivos = st.sidebar.checkbox("Añadir Co-solventes (Plantillas Complejas)")
+    activar_aditivos = st.sidebar.checkbox("Añadir co-solventes (Plantillas complejas)")
 
     if activar_aditivos:
-        tipo_aditivo = st.sidebar.selectbox("Selecciona el aditivo:", ["DMSO", "Glicerol", "Formamida"])
+        tipo_aditivo = st.sidebar.selectbox("Seleccione el aditivo:", ["DMSO", "Glicerol", "Formamida"])
         vol_aditivo = st.sidebar.number_input(f"Volumen de {tipo_aditivo} por tubo (uL):", min_value=0.0, value=1.25, step=0.25)
         if vol_aditivo > 0:
             reactivos[f"Aditivo ({tipo_aditivo})"] = vol_aditivo
@@ -148,13 +148,13 @@ with tab_mix:
     res = calculos.calcular_componentes(n_muestras, vol_final, vol_adn, porcentaje_error, reactivos)
 
     if res["error"]:
-        st.error("[ERROR] RESTRICCION DE VOLUMEN DETECTADA")
+        st.error("RESTRICCIÓN DE VOLUMEN DETECTADA")
         st.warning(f"Motivo: {res['motivo_error']}")
         if "reactivos_fijos" in res:
-            st.info(f"La suma de reactivos fijos ({res['reactivos_fijos']} uL) mas el ADN asignado ({vol_adn} uL) excede la capacidad total configurada ({vol_final} uL).")
+            st.info(f"La suma de reactivos fijos ({res['reactivos_fijos']} uL) más el ADN asignado ({vol_adn} uL) excede la capacidad total configurada ({vol_final} uL).")
     else:
         if formato_lote != "Manual":
-            st.info(f"Modo automatico activo: Configurado para {formato_lote}")
+            st.info(f"Modo automático activo: Configurado para {formato_lote}")
             
         st.subheader(f"Resultados del Lote (Calculado para {res['n_total_rxs']:.2f} reacciones)")
         
@@ -184,71 +184,71 @@ with tab_mix:
         st.dataframe(df, use_container_width=True, hide_index=True)
 
         st.info(
-            f"INSTRUCCIONES DE OPERACION EN MESADA:\n\n"
-            f"1. En un tubo de volumen adecuado, armar el Master Mix combinando los volumenes consolidados de la columna 'Master Mix Total' (Total: {res['total_tubo_master']:.2f} uL).\n\n"
-            f"2. Homogeneizar por inversion suave y alicuotar {res['vol_mm_por_tubo']:.2f} uL del mix en cada pocillo.\n\n"
-            f"3. Incorporar los {vol_adn:.2f} uL de la muestra de ADN de forma independiente por reaccion."
+            f"Guía de operación en mesada:\n\n"
+            f"1. En un tubo de volumen adecuado, prepare el Master Mix combinando los volúmenes consolidados de la columna 'Master Mix Total' (Volumen total: {res['total_tubo_master']:.2f} uL).\n\n"
+            f"2. Homogeneice por inversión suave y alícuote {res['vol_mm_por_tubo']:.2f} uL de la mezcla en cada pocillo.\n\n"
+            f"3. Incorpore los {vol_adn:.2f} uL de la muestra de ADN de forma independiente en cada reacción."
         )
 
         st.write("---")
         if res["balance_masa_ok"]:
-            st.success("CONTROL DE CALIDAD (QA/QC): Balance de masa convergente. Los microvolumenes cierran perfectamente.")
+            st.success("Control de calidad: Balance de masa convergente. Los microvolúmenes coinciden correctamente.")
         else:
-            st.warning("CONTROL DE CALIDAD (QA/QC): Se detecto un desvio marginal en el redondeo decimal flotante.")
+            st.warning("Control de calidad: Se detectó un desvío marginal en el redondeo decimal.")
 
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         reporte_txt = (
             f"=========================================================\n"
-            f"        REPORTE DE MESADA - GENMOL PCR TOOLS\n"
+            f"        REPORTE DE PREPARACIÓN DE REACCIONES\n"
             f"        Fecha y Hora: {timestamp}\n"
             f"=========================================================\n\n"
             f"Muestras: {n_muestras} | Volumen Final: {vol_final} uL | ADN: {vol_adn} uL\n"
-            f"Volumen total a armar en Eppendorf Madre: {res['total_tubo_master']:.2f} uL\n"
-            f"Fraccionar por pocillo: {res['vol_mm_por_tubo']:.2f} uL de Mix + {vol_adn:.2f} uL de ADN.\n"
+            f"Volumen total a preparar en tubo madre: {res['total_tubo_master']:.2f} uL\n"
+            f"Distribución por pocillo: {res['vol_mm_por_tubo']:.2f} uL de Mix + {vol_adn:.2f} uL de ADN.\n"
         )
 
         st.download_button(
             label="Descargar Reporte de Lote (.txt)",
             data=reporte_txt,
-            file_name=f"pcr_web_reporte_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+            file_name=f"reporte_pcr_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
             mime="text/plain"
         )
 
 # --- SOLAPA 2: OPTIMIZACION DE CICLADO TERMICO ---
 with tab_ciclado:
-    st.subheader("Calculador de Perfil Termico para Termociclador")
-    st.markdown("Estima las temperaturas y tiempos clave para la reaccion en base a tus cebadores y secuencia blanco.")
+    st.subheader("Estimación de Perfil para Termociclador")
+    st.markdown("Cálculo aproximado de las temperaturas y tiempos clave para la reacción en base a las propiedades de los cebadores y el amplicón.")
     
     col_tm, col_bp = st.columns(2)
-    tm_input = col_tm.number_input("Tm del Primer mas debil (Grados C):", min_value=20.0, max_value=85.0, value=60.0, step=0.5)
-    bp_input = col_bp.number_input("Longitud esperada del amplicon (Pares de bases - bp):", min_value=50, max_value=10000, value=500, step=50)
+    tm_input = col_tm.number_input("Tm del cebador con menor estabilidad (Grados C):", min_value=20.0, max_value=85.0, value=60.0, step=0.5)
+    bp_input = col_bp.number_input("Longitud esperada del amplicón (Pares de bases - bp):", min_value=50, max_value=10000, value=500, step=50)
     
     ciclado_res = calculos.calcular_parametros_ciclado(tm_input, bp_input)
     
     st.write("---")
-    st.markdown("### Perfil de Termociclador Recomendado (Polimerasa Estandar)")
+    st.markdown("### Perfil de Ciclado Recomendado (Polimerasa Estándar)")
     
     st.code(
-        f"1. Desnaturalizacion Inicial : 95 C por 3:00 minutos\n"
-        f"2. Desnaturalizacion (Ciclos): 95 C por 0:30 segundos\n"
+        f"1. Desnaturalización Inicial : 95 C por 3:00 minutos\n"
+        f"2. Desnaturalización (Ciclos): 95 C por 0:30 segundos\n"
         f"3. Anillamiento (Annealing)  : {ciclado_res['ta']} C por 0:30 segundos\n"
-        f"4. Extension (Ciclos)       : 72 C por {ciclado_res['tiempo_ext_seg']} segundos\n"
-        f"5. Extension Final          : 72 C por 5:00 minutos",
+        f"4. Extensión (Ciclos)        : 72 C por {ciclado_res['tiempo_ext_seg']} segundos\n"
+        f"5. Extensión Final           : 72 C por 5:00 minutos",
         language="text"
     )
 
 # --- SOLAPA 3: ASISTENTE DE DILUCIONES ---
 with tab_dilucion:
-    st.subheader("Calculadora de Concentraciones (C1 * V1 = C2 * V2)")
-    st.markdown("Usa esta herramienta para calcular el volumen individual de algun reactivo antes de cargarlo a la par.")
+    st.subheader("Cálculo de Diluciones (C1 * V1 = C2 * V2)")
+    st.markdown("Herramienta para determinar el volumen de reactivo stock necesario para alcanzar la concentración requerida.")
     
     col_c1, col_c2, col_v2 = st.columns(3)
-    c_stock = col_c1.number_input("Concentracion Stock (C1):", min_value=0.0, value=10.0, key="c1_tab")
-    c_final = col_c2.number_input("Concentracion Final (C2):", min_value=0.0, value=0.4, key="c2_tab")
-    v_target = col_v2.number_input("Volumen Final Tubo (V2 - uL):", min_value=0.0, value=25.0, key="v2_tab")
+    c_stock = col_c1.number_input("Concentración Stock (C1):", min_value=0.0, value=10.0, key="c1_tab")
+    c_final = col_c2.number_input("Concentración Final (C2):", min_value=0.0, value=0.4, key="c2_tab")
+    v_target = col_v2.number_input("Volumen Final del Tubo (V2 - uL):", min_value=0.0, value=25.0, key="v2_tab")
     
     v1_calculado = calculos.calcular_volumen_dilucion(c_stock, c_final, v_target)
     if v1_calculado > 0:
-        st.success(f"Resultado: Necesitas agregar exactamente {v1_calculado:.2f} uL del stock por cada tubo.")
+        st.success(f"Resultado: Es necesario añadir exactamente {v1_calculado:.2f} uL del reactivo stock por cada tubo.")
     else:
-        st.warning("Verifica los valores: la concentracion final no puede superar a la concentracion stock.")
+        st.warning("Verifique las variables introducidas: la concentración final no puede ser superior a la concentración del stock.")
