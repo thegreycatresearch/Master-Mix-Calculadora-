@@ -9,51 +9,45 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- INYECCION DE DISEÑO ESTRUCTURAL (Inmune al modo System) ---
-st.markdown("""
+# --- PLAN DEFINITIVO: INYECCION CON ST.HTML (Sáltase el aislamiento de Markdown) ---
+st.html("""
     <style>
-    /* 1. Pintar el fondo principal de la aplicacion (Cuerpo) */
-    .stAppViewContainer {
+    /* 1. Fondo general de la aplicacion */
+    .stApp, .stMain {
         background-color: #ffffff !important;
     }
     
-    /* 2. Pintar el fondo de la barra lateral de gris sutil */
-    [data-testid="stSidebar"] > div:first-child {
+    /* 2. Fondo de la barra lateral */
+    [data-testid="stSidebar"] {
         background-color: #f1f5f9 !important;
     }
     
-    /* 3. Forzar el color de todos los textos dentro de la barra lateral */
-    [data-testid="stSidebar"] *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
+    /* 3. Color de todos los textos del sistema (pizarra oscuro) */
+    h1, h2, h3, h4, p, label, span, .stMarkdown p {
         color: #1e293b !important;
     }
     
-    /* 4. Cambiar el color de los botones normales y de descarga a Verde Esmeralda */
-    button[data-testid="baseButton-secondary"], button[data-testid="baseButton-primary"] {
+    /* 4. Botones principales, secundarios y de descarga (Verde Esmeralda) */
+    button {
         background-color: #059669 !important;
         color: white !important;
         border: 1px solid #059669 !important;
         border-radius: 6px !important;
-        transition: background-color 0.2s ease !important;
     }
     
-    /* 5. Efecto Hover para los botones */
-    button[data-testid="baseButton-secondary"]:hover, button[data-testid="baseButton-primary"]:hover {
+    /* 5. Efecto al pasar el mouse por arriba de cualquier boton */
+    button:hover {
         background-color: #047857 !important;
         border-color: #047857 !important;
         color: white !important;
     }
     
-    /* 6. Color verde esmeralda para la linea de la solapa activa (Tabs) */
+    /* 6. Linea inferior y texto de la solapa activa (Tabs) */
     button[data-baseweb="tab"] div[aria-selected="true"] {
         color: #059669 !important;
     }
-    
-    /* 7. Ajustar el color de los textos generales fuera de la barra lateral */
-    .stMarkdown p, h1, h2, h3, h4 {
-        color: #1e293b !important;
-    }
     </style>
-""", unsafe_allow_html=True)
+""")
 
 # 3. Encabezado institucional de la aplicacion
 st.title("GENMOL-PCR: Calculador Web v1.2")
