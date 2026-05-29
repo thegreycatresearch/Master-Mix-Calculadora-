@@ -38,4 +38,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Calculadora_PCR_Windows
-        path: "**/dist/lanzador.exe"
+        # Cambiamos path para que suba la carpeta 'dist' entera, no solo el .exe
+        path: "**/dist/lanzador/"
